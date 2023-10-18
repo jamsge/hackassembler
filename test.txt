@@ -1,0 +1,7 @@
+D=0
+M=1
+D=D+1
+D=D+1;JMP
+M=M-D;JEQ
+@R0
+(MyLabel)
