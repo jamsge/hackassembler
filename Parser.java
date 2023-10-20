@@ -10,7 +10,7 @@ public class Parser {
     final private String A_INSTRUCTION = "A_INSTRUCTION";
     final private String C_INSTRUCTION = "C_INSTRUCTION";
     final private String L_INSTRUCTION = "L_INSTRUCTION";
-    final private String BLANK = "";
+    final private String BLANK = "BLANK";
 
     private File file;
     private Scanner sc;
@@ -25,6 +25,7 @@ public class Parser {
             System.out.println("File not found");
             System.exit(0);
         }
+        sc.nextLine();
     }
 
     public String getCurrentLine(){
@@ -36,16 +37,18 @@ public class Parser {
     }
 
     
-    // @TODO: make this function also trim whitespace from currentLine
+    // @TODO: skip blank lines
     public String advance(){
-        currentLine = sc.nextLine();
+        do {
+            currentLine = sc.nextLine().replaceAll("\\s+","").replaceAll("\\s+","");
+        } while(currentLine.equals(""));
         return currentLine;
     }
 
 
     public String instructionType(){
         String instruction = currentLine;
-        if (instruction.substring(0,1).equals("@")){
+        if (instruction.length()!=0 && instruction.substring(0,1).equals("@")){
             return A_INSTRUCTION;
         } else if (instruction.contains("=")){
             return C_INSTRUCTION;
@@ -53,12 +56,10 @@ public class Parser {
             return L_INSTRUCTION;
         } else if(instruction.equals("")){
             return BLANK;
-        } else {
-            System.out.println("ERROR: invalid instruction");
-            System.out.println(instruction);
-            System.exit(0);
-        }
-        System.out.println("something has gone terribly wrong");
+        } 
+        System.out.println("ERROR: invalid instruction");
+        System.out.println(instruction);
+        System.exit(0);
         return "";
     }
 
