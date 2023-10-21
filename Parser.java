@@ -7,10 +7,10 @@ import java.net.URL;
 
 public class Parser {
     
-    final private String A_INSTRUCTION = "A_INSTRUCTION";
-    final private String C_INSTRUCTION = "C_INSTRUCTION";
-    final private String L_INSTRUCTION = "L_INSTRUCTION";
-    final private String BLANK = "BLANK";
+    final public String A_INSTRUCTION = "A_INSTRUCTION";
+    final public String C_INSTRUCTION = "C_INSTRUCTION";
+    final public String L_INSTRUCTION = "L_INSTRUCTION";
+    final public String BLANK = "BLANK";
 
     private File file;
     private Scanner sc;
@@ -25,7 +25,14 @@ public class Parser {
             System.out.println("File not found");
             System.exit(0);
         }
-        sc.nextLine();
+        
+        do {
+            currentLine = sc.nextLine().replaceAll("\\s+","").replaceAll("\\s+","");
+            int commentIdx = currentLine.indexOf("//");
+            if (commentIdx > -1){
+                currentLine = currentLine.substring(0, commentIdx);
+            }
+        } while(currentLine.equals(""));
     }
 
     public String getCurrentLine(){
@@ -41,6 +48,10 @@ public class Parser {
     public String advance(){
         do {
             currentLine = sc.nextLine().replaceAll("\\s+","").replaceAll("\\s+","");
+            int commentIdx = currentLine.indexOf("//");
+            if (commentIdx > -1){
+                currentLine = currentLine.substring(commentIdx);
+            }
         } while(currentLine.equals(""));
         return currentLine;
     }
@@ -50,7 +61,7 @@ public class Parser {
         String instruction = currentLine;
         if (instruction.length()!=0 && instruction.substring(0,1).equals("@")){
             return A_INSTRUCTION;
-        } else if (instruction.contains("=")){
+        } else if (instruction.contains("=") || instruction.contains(";")){
             return C_INSTRUCTION;
         } else if (instruction.contains("(") && instruction.contains(")")){
             return L_INSTRUCTION;
@@ -76,6 +87,9 @@ public class Parser {
         if (!instructionType().equals(C_INSTRUCTION)){
             return null;
         }
+        if (currentLine.contains("="))
+            return currentLine.substring(0,currentLine.indexOf("="));
+        
         return currentLine.substring(0,1);
     }
 
@@ -83,7 +97,7 @@ public class Parser {
         if (!instructionType().equals(C_INSTRUCTION)){
             return null;
         }
-        String myComp = currentLine.substring(2);
+        String myComp = currentLine;
         int scLoc = myComp.indexOf(";");
         if (scLoc > -1){
             myComp = myComp.substring(0, scLoc);
@@ -93,11 +107,12 @@ public class Parser {
 
     public String jump(){
         if (!instructionType().equals(C_INSTRUCTION)){
+            System.out.println("this is not a C instruction");
             return null;
         }
         int scLoc = currentLine.indexOf(";");
         if (scLoc == -1){
-            return null;
+            return "";
         }
         return currentLine.substring(scLoc + 1);
     }

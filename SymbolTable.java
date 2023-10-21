@@ -4,6 +4,7 @@ import java.util.Map;
 public class SymbolTable {
     private Map<String, Integer> symbolTable;
 
+    private int symAddr = 0;
     public SymbolTable() {
         symbolTable = new HashMap<>();
     }
@@ -20,8 +21,8 @@ public class SymbolTable {
         if (contains(symbol)) {
             return symbolTable.get(symbol);
         } else {
-            System.out.println("Symbol " + symbol + " not found");
-            System.exit(0);
+            addEntry(symbol, symAddr);
+            symAddr++;
         }
         return 0;
     }   

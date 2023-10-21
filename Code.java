@@ -6,6 +6,7 @@ public class Code {
     private static final String ONE = "1";
 
     public static String dest(String registers){
+        System.out.println(registers);
         String bits = "";
         if (registers.contains("A")){
             bits += ONE;
@@ -56,15 +57,17 @@ public class Code {
             bits = "001";
             break;
 
-            default:
-            System.out.println("invalid jump comparison made");
         }
         return bits;
     }
 
     public static String comp(String operation){
+        if (operation.contains("=")){
+            operation = operation.substring(operation.indexOf("=") + 1);
+        }
         Map<String, String> compCodes = new HashMap<>();
 
+        // terrible, horrific even
         compCodes.put("0", "0101010");
         compCodes.put("1", "0111111");
         compCodes.put("-1", "0111010");
